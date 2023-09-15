@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV to Table</title>
+</head>
+<body>
+    <h1>CSV to Table</h1>
+    <input type="file" id="csvFile" accept=".csv">
+    <div id="tableContainer">
+        <table id="dataTable" border="1">
+            <!-- Table headers will be populated here -->
+        </table>
+    </div>
+
+    <script>
+        // Function to parse and display CSV data in a table
+        function parseCSV(file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const content = e.target.result;
+                const lines = content.split('\n');
+                const tableContainer = document.getElementById('tableContainer');
+                const dataTable = document.getElementById('dataTable');
+                dataTable.innerHTML = '';
+
+                if (lines.length > 0) {
+                    const headers = lines[0].split(',');
+
+                    // Create table headers
+                    const headerRow = document.createElement('tr');
+                    headers.forEach(headerText => {
+                        const headerCell = document.createElement('th');
+                        headerCell.textContent = headerText;
+                        headerRow.appendChild(headerCell);
+                    });
+                    dataTable.appendChild(headerRow);
+
+                    // Create table rows
+                    for (let i = 1; i < lines.length; i++) {
+                        const rowData = lines[i].split(',');
+                        if (rowData.length === headers.length) {
+                            const row = document.createElement('tr');
+                            rowData.forEach(cellData => {
+                                const cell = document.createElement('td');
+                                cell.textContent = cellData;
+                                row.appendChild(cell);
+                            });
+                            dataTable.appendChild(row);
+                        }
+                    }
+
+                    tableContainer.style.display = 'block';
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Event listener for file input change
+        const csvFileInput = document.getElementById('csvFile');
+        csvFileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            parseCSV(file);
+        });
+    </script>
+</body>
+</html>
